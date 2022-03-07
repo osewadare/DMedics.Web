@@ -4,11 +4,23 @@ import Home from './pages/Home';
 import "tailwindcss/dist/base.css";
 import "./styles/globalStyles.css";
 
+import Booking from "./pages/Booking.js"
+
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+
 function App() {
   return (
-    <div className='App'>
+    <Router>
+    <Switch>
+      <Route path="/booking">
+        <Booking />
+      </Route>
+      <Route path="/">
         <Home />
-    </div>
+      </Route>
+    </Switch>
+    </Router>
 
   );
 }
