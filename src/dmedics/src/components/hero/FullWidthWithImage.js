@@ -65,7 +65,7 @@ export default ({
     </>
   ),
   description = "The Reliable Booking Platform for your driver medicals.",
-  primaryActionUrl = "#",
+  primaryActionUrl = "/booking",
   primaryActionText = "Book Medical",
   secondaryActionUrl = "#",
   secondaryActionText = "Search Medical"

@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import Home from './pages/Home';
 import "tailwindcss/dist/base.css";
-import "./styles/globalStyles.css";
+import "./assets/styles/globalStyles.css";
 
 import Booking from "./pages/Booking.js"
 
@@ -16,6 +16,9 @@ function App() {
       <Route path="/booking">
         <Booking />
       </Route>
+     {/*} <Route path="/creatappointmentbookingintent">
+        <Payment />
+  </Route>*/}
       <Route path="/">
         <Home />
       </Route>
