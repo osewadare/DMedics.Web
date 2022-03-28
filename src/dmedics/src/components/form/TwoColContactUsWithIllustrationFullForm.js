@@ -7,16 +7,19 @@ import { PrimaryButton as PrimaryButtonBase } from "../../components/misc/Button
 import BookAppointmentSrc from "../../assets/images/bookappointment.jpg";
 
 
+//import CustomSelect from "react-select-with-icon";
+
+
+
 //Timeslot component
 import moment from 'moment';
-import ReactTimeslotCalendar from 'react-timeslot-calendar-k';
-import Select from 'react-select'
-import reactSelect from "react-select";
-
+import DayTimePicker from '@mooncake-dev/react-day-time-picker';
 
 //Stripe 
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { Redirect } from 'react-router';
+import { useHistory, useLocation } from "react-router-dom";
 
 
 //Styles
@@ -86,54 +89,153 @@ export default ({
   subheading = "",
   heading = <> Book Medical <span tw="text-primary-500">Instantly</span><wbr/></>,
   description = <> All driver medicals are completed in accordance with DVLA Group 2 guidelines. <wbr/> Fill in your details below to get an appointment </>,
-  submitButtonText = "Send",
-  formAction = "creatappointmentbookingintent",
-  formMethod = "get",
+  submitButtonText = "Book",
   textOnLeft = true,
 }) => {
+  
+ 
+  //Executes side effect 
+  const [appointmentTypes, setAppointmentTypes] = React.useState([])
+  const [clinics, setClinic] = React.useState([])
 
 
-  fetch("https://localhost:5001/api/Appointment/GetAvailableAppointmentTypes").
-  then(res => res.json()).
-  then(data => console.log(data));
-  // The textOnLeft boolean prop can be used to display either the text on left or right side of the image.
+  const [appointmentDates, setAppointmentDates] = React.useState([])
+  const [appointmentIds, setAppointmentIds] = React.useState([])
+  const [appointmentDateTimeOnly, setAppointmentDateTimeOnly] = React.useState([])
+
+  const [paymentClientSecret, setpaymentClientSecret] = React.useState("")
+  const [formData, setFormData] = React.useState(
+    {
+      firstName:"", 
+      lastName: "", 
+      emailAddress: "", 
+      dob:"", 
+      phoneNumber:"",
+      gender: "",
+      appointmentTypeId: "",
+      appointmentId: "",
+      postCode:""
+  })
+
+  function handleChange(event){
+    setFormData (
+      prevFormData => {
+        return {
+          ...prevFormData,
+          [event.target.name]: event.target.value
+        }
+      }
+    )
+    }
+
+    function setSelectedTimeSlot(dateTime){
+      const selectedSlotIndex = appointmentDateTimeOnly.indexOf(dateTime.getTime());
+      const appointmentId = appointmentIds[selectedSlotIndex];
+      formData.appointmentTypeId = appointmentId;
+    }
+
+  const history = useHistory()
+  React.useEffect(getAppointmentTypes, [])
+  React.useEffect(getClinics, [])
+
+  function getAppointmentTypes(){
+    fetch("https://localhost:5001/api/Appointment/get-available-appointment-types").
+    then(res => res.json()).
+    then(data => setAppointmentTypes(data.appointmentTypes)); 
+  }
+
+  function getClinics(){
+    fetch("https://localhost:5001/api/Appointment/get-clinics").
+    then(res => res.json()).
+    then(data => setClinic(data.clinicsResponse)); 
+  }
+
+  function getCreatedAppointmentDatesForClinic(event){
+    const clinicId = event.target.value;
+    fetch(`https://localhost:5001/api/Appointment/get-created-appointment-dates?clinicId=${clinicId}`).
+    then(res => res.json()).
+    then(data => setAndParseAppointmentDates(data.createdAppointmentResponseModel)); 
+  }
+
+
+  function setAndParseAppointmentDates(appointmentDates){
+
+    console.log(appointmentDates)
+    setAppointmentDates(appointmentDates)
+    setAppointmentDateTimeOnly(appointmentDates.map(x => new Date(x.appointmentDateTime).getTime()));
+    setAppointmentIds(appointmentDates.map(x => x.appointmentId));
+  }
+
+  async function createAppointmentBookingIntent(event)
+  {
+    event.preventDefault();
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)};
+    const response = await fetch("https://localhost:5001/api/Appointment/create-appointment-booking-intent", requestOptions)
+    const responseData = await response.json();  
+    history.push({
+      pathname: '/checkout',
+      state: { clientSecret: responseData.message }
+  }) 
+  }
+
+
+  function timeSlotValidator(slotTime) {
+   
+    const isValid = appointmentDateTimeOnly.includes(slotTime.getTime());
+    return isValid;
+  }
 
   return (
     <Container>
       <TwoColumn>
-
         <ImageColumn>
           <Image imageSrc={BookAppointmentSrc} />
         </ImageColumn>
-
         <TextColumn textOnLeft={textOnLeft}>
 
     <TextContent>
             {subheading && <Subheading>{subheading}</Subheading>}
             <Heading>{heading}</Heading>
             {description && <Description>{description}</Description>}
+            <Form onSubmit={createAppointmentBookingIntent}>
 
-            <Form action={formAction} method={formMethod}>
 
-            <Select options={options} />
 
-              <Input type="text" name="firstName" placeholder="First Name" />
-              <Input type="text" name="lastName" placeholder="Last Name" />
-              <Input type="email" name="email" placeholder="Email Address" />
+            <select required name="appointmentTypeId" onChange={handleChange}>     
+             <option value="⬇️ Select an Appointment Type ⬇️"> -- Select an Appointment Type -- </option>
+                {appointmentTypes.map((appointmentType) => <option key={appointmentType.appointmentTypeId} value={appointmentType.appointmentTypeId}>{appointmentType.typeTitle}</option>)}
+             </select> 
 
-              <Subheading>Date of Birth </Subheading>
-              <Input type="date" name="DOB" />
+             <select required name="clinicId" onChange={getCreatedAppointmentDatesForClinic}>     
+             <option value="⬇️ Select a Clinic ⬇️"> -- Select a Clinic -- </option>
+                {clinics.map((clinic) => <option key={clinic.clinicId} value={clinic.clinicId}>{clinic.clinic}</option>)}
+             </select> 
 
-              <Input type="phone" name="phoneNumber" placeholder="Phone Number"/>
-              <Input type="date" name="Appointment Date" />
+             <DayTimePicker timeSlotValidator={timeSlotValidator} 
+             timeSlotSizeMinutes={60}
+             confirmText="Select Slot" onConfirm={setSelectedTimeSlot}/>
 
-              <ReactTimeslotCalendar initialDate={moment().format()} timeslots={timeSlots} renderDays={ignoreWeekends}
-            />
+              <Input type="text" required placeholder="First Name" name="firstName" onChange={handleChange}/>
+              <Input type="text" required placeholder="Last Name" name="lastName" onChange={handleChange}/>
+              <Input type="text" required placeholder="Email" name="emailAddress" onChange={handleChange}/>
+              <Input type="date" required name="dob" onChange={handleChange}/>
+              <Input type="phone" required placeholder="Phone Number" name="phoneNumber" onChange={handleChange}/>
+              <Input type="text" required placeholder="Post Code" name="postCode" onChange={handleChange}/>
 
-    
-              <SubmitButton type="submit">{submitButtonText}</SubmitButton>
 
-            </Form>
+            <select required name="gender" onChange={handleChange}>     
+             <option value="⬇️ Gender ⬇️"> -- Gender -- </option>
+             <option value="Male">Male</option>
+             <option value="Female">Female</option>
+             </select> 
+
+             {/* <ReactTimeslotCalendar initialDate={moment().format()} timeslots={timeSlots} renderDays={ignoreWeekends}/> */}
+              <input type="submit" value="Submit"/>
+           </Form>
+
   </TextContent>
         </TextColumn>
 

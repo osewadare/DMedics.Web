@@ -5,6 +5,8 @@ import "tailwindcss/dist/base.css";
 import "./assets/styles/globalStyles.css";
 
 import Booking from "./pages/Booking.js"
+import BookingStatus from "./pages/BookingStatus.js"
+import Payment from "./pages/Payment.js"
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -16,9 +18,12 @@ function App() {
       <Route path="/booking">
         <Booking />
       </Route>
-     {/*} <Route path="/creatappointmentbookingintent">
+    <Route path="/checkout">
         <Payment />
-  </Route>*/}
+  </Route>
+  <Route path = '/completed'>
+    <BookingStatus/>
+  </Route>
       <Route path="/">
         <Home />
       </Route>

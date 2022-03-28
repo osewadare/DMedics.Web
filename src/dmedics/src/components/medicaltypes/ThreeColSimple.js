@@ -8,11 +8,12 @@ import { SectionDescription } from "../../components/misc/Typography.js";
 import { Container, ContentWithPaddingXl } from "../../components/misc/Layouts.js";
 
 import { ReactComponent as ArrowRightIcon } from "../../assets/images/arrow-right-icon.svg";
+import { ReactComponent as SvgDecoratorBlob3 } from "../../assets/images/svg-decorator-blob-3.svg";
+
+
 import TaxiImage from "../../assets/images/Taxi-icon.svg";
 import AmbulanceImage from "../../assets/images/Ambulance-icon.svg";
 import HGVImage from "../../assets/images/HGV-icon.svg";
-
-import { ReactComponent as SvgDecoratorBlob3 } from "../../assets/images/svg-decorator-blob-3.svg";
 
 const Heading = tw(SectionHeading)``;
 const Subheading = tw(SubheadingBase)`text-center mb-3`;
@@ -54,24 +55,24 @@ const DecoratorBlob = styled(SvgDecoratorBlob3)`
 `;
 
 export default ({
-  cards = [
+  appointmentTypes = [
     {
       imageSrc: HGVImage,
       title: "HGV Driver Medicals",
       description: "We strictly only deal with vendors that provide top notch security.",
-      url: "#"
+      url: "https://timerse.com"
     },
     {
       imageSrc: TaxiImage,
       title: "Taxi Driver Medicals",
       description: "Lorem ipsum donor amet siti ceali placeholder text",
-      url: "#"
+      url: "https://google.com"
     },
     {
       imageSrc: AmbulanceImage,
       title: "Ambulance Driver Medicals",
       description: "Lorem ipsum donor amet siti ceali placeholder text",
-      url: "#"
+      url: "https://reddit.com"
     }
   ],
   linkText = "Learn More",
@@ -80,14 +81,7 @@ export default ({
   description = "",
   imageContainerCss = null,
   imageCss = null
-}) => {
-  /*
-   * This componets accepts a prop - `cards` which is an array of object denoting the cards. Each object in the cards array can have the following keys (Change it according to your need, you can also add more objects to have more cards in this feature component):
-   *  1) imageSrc - the image shown at the top of the card
-   *  2) title - the title of the card
-   *  3) description - the description of the card
-   *  4) url - the url that the card should goto on click
-   */
+}) => { 
   return (
     <Container>
       <ContentWithPaddingXl>
@@ -95,14 +89,14 @@ export default ({
         {heading && <Heading>{heading}</Heading>}
         {description && <Description>{description}</Description>}
         <ThreeColumnContainer>
-          {cards.map((card, i) => (
+          {appointmentTypes.map((appointmentType, i) => (
             <Column key={i}>
-              <Card href={card.url}>
+              <Card href={appointmentType.url}>
                 <span className="imageContainer" css={imageContainerCss}>
-                  <img src={card.imageSrc} alt="" css={imageCss} />
+                  <img src={appointmentType.imageSrc} alt="" css={imageCss} />
                 </span>
-                <span className="title">{card.title}</span>
-                <p className="description">{card.description}</p>
+                <span className="title">{appointmentType.title}</span>
+                <p className="description">{appointmentType.description}</p>
                 {linkText && (
                   <span className="link">
                     <span>{linkText}</span>

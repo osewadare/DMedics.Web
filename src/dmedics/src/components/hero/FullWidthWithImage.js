@@ -68,7 +68,7 @@ export default ({
   primaryActionUrl = "/booking",
   primaryActionText = "Book Medical",
   secondaryActionUrl = "#",
-  secondaryActionText = "Search Medical"
+  secondaryActionText = "View Appointment"
 }) => {
   return (
     <Container>

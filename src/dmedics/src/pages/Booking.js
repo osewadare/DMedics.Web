@@ -5,6 +5,7 @@ import BookingForm from "../components/form/TwoColContactUsWithIllustrationFullF
 
 
 
+
 export default function Booking() {
   return (
     <AnimationRevealPage>

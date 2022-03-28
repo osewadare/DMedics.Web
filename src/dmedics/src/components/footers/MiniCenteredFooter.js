@@ -57,7 +57,7 @@ export default () => {
             </SocialLink>
           </SocialLinksContainer>
           <CopyrightText>
-            &copy; Copyright 2021, Dmedics. All Rights Reserved.
+            &copy; Copyright 2022, DMedics. All Rights Reserved.
           </CopyrightText>
         </Row>
       </Content>
