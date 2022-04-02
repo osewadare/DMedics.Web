@@ -81,7 +81,7 @@ export default ({
   description = "",
   imageContainerCss = null,
   imageCss = null
-}) => { 
+}) => {
   return (
     <Container>
       <ContentWithPaddingXl>

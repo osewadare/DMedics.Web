@@ -25,6 +25,10 @@ const appearance = {
   };
 
 //Twin macro styling 
+
+const Form = tw.form`mt-8 md:mt-10 text-sm flex flex-col max-w-sm mx-auto md:mx-0`
+const Input = tw.input`mt-6 first:mt-0 border-b-2 py-3 focus:outline-none font-medium transition duration-300 hocus:border-primary-500`
+
 const Wrapper = tw.section`flex w-full`
 const Column = tw.div`w-1/3`
 const Container = tw(ContainerBase)`min-h-screen bg-primary-900 text-white font-medium flex justify-center -m-8`;
@@ -40,23 +44,32 @@ const IllustrationImage = styled.div`
   ${tw`m-12 xl:m-16 w-full max-w-lg bg-contain bg-center bg-no-repeat`}
 `;
 
-const headingText= "Checkout"
+const headingText= "View Appointment Details"
 const logoLinkUrl = "#"
 const illustrationImageSrc = illustration
 
 export default function () {
-    const location = useLocation();
-    const clientSecret = location.state.clientSecret; 
-    const options = {
-        clientSecret,
-        appearance,
-      };
+
+
+  const [appointment, setAppointment] = React.useState('');
+
+  const [appointmentReference, setAppointmentReference] = React.useState('');
+
+  function getAppointment(event){
+
+    event.preventDefault();
+      fetch(`https://localhost:5001/api/Appointment/get-appointment?appointmentReference=${appointmentReference}`).
+      then(res => res.json()).
+      then(data => setAppointment(data)); 
+  }
+
+function handleChange(event){
+  setAppointmentReference(event.target.value)
+}
+
+
   return (
-    <div className="App">
-        {clientSecret && (
-
-
-<AnimationRevealPage>
+  <AnimationRevealPage>
     <Container>
       <Content> 
         <MainContainer>
@@ -64,20 +77,24 @@ export default function () {
             <LogoImage src={logo} />
           </LogoLink>
           <MainContent>
-            <Heading>{headingText}</Heading>
-            <Elements options={options} stripe={stripePromise}>
-                <CheckoutForm />
-            </Elements> 
+            <Heading>{headingText}</Heading>  
+            <Form onSubmit={getAppointment}>
+            <Input type="text" required placeholder="Appointment Reference" name="appointmentReference" onChange={handleChange}/>
+            <Input type="submit" value="View"/>
+            </Form>
           </MainContent>
         </MainContainer>
-        <IllustrationContainer>
-          <IllustrationImage imageSrc={illustrationImageSrc} />
-        </IllustrationContainer>
+        <MainContainer>
+          <MainContent>
+            <h2>Appointment Reference: {appointment.appointmentReference}</h2>
+            <h2>First Name: {appointment.firstName}</h2>
+            <h2>Appointment Time: {appointment.appointmentDateTime}</h2>
+            <h2>Clinic: {appointment.clinic}</h2>
+          </MainContent>
+        </MainContainer>
       </Content>
     </Container>
   </AnimationRevealPage>
-        )}
-      </div>
   )
 }
 

@@ -67,7 +67,7 @@ export default ({
   description = "The Reliable Booking Platform for your driver medicals.",
   primaryActionUrl = "/booking",
   primaryActionText = "Book Medical",
-  secondaryActionUrl = "#",
+  secondaryActionUrl = "/appointment",
   secondaryActionText = "View Appointment"
 }) => {
   return (
