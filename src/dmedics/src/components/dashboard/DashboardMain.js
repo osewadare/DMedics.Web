@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
+import { Link } from "react-router-dom";
+
 
 import { SectionHeading } from "../misc/Headings.js";
 import { ReactComponent as SvgDecoratorBlob3 } from "../../assets/images/logo.svg";
@@ -42,8 +44,8 @@ const DecoratorBlob = styled(SvgDecoratorBlob3)`
 
 export default function dashboardMain() {
   const cards = [
-    { imageSrc: addImage, title: "Create Appointment" },
-    { imageSrc: viewImage, title: "View Appointments" },
+    { imageSrc: addImage, title: "Create Appointment", href: "/create-appointment" },
+    { imageSrc: viewImage, title: "View Appointments", href: "/view-appointments" },
   ];
   return (
     <Container>
@@ -51,14 +53,16 @@ export default function dashboardMain() {
         <Heading>Admin <span tw="text-primary-500">Dashboard</span></Heading>
         {cards.map((card, i) => (
           <Column key={i}>
-            <Card>
-              <span className="imageContainer">
-                <img src={card.imageSrc} alt="" />
-              </span>
-              <span className="textContainer">
-                <span className="title">{card.title}</span>
-              </span>
-            </Card>
+            <Link to={card.href}>
+              <Card>
+                <span className="imageContainer">
+                  <img src={card.imageSrc} alt="" />
+                </span>
+                <span className="textContainer">
+                  <span className="title">{card.title}</span>
+                </span>
+              </Card>
+            </Link>
           </Column>
         ))}
       </ThreeColumnContainer>

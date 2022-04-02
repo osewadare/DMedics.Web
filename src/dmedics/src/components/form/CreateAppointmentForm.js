@@ -1,24 +1,14 @@
 import React from "react";
 import tw from "twin.macro";
 import styled from "styled-components";
-import { css } from "styled-components/macro"; //eslint-disable-line
 import { SectionHeading, Subheading as SubheadingBase } from "../misc/Headings.js";
 import { PrimaryButton as PrimaryButtonBase } from "../misc/Buttons.js";
 import BookAppointmentSrc from "../../assets/images/bookappointment.jpg";
 
-
-//import CustomSelect from "react-select-with-icon";
-
-
-
 //Timeslot component
-import moment from 'moment';
 import DayTimePicker from '@mooncake-dev/react-day-time-picker';
 
 //Stripe 
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { Redirect } from 'react-router';
 import { useHistory, useLocation } from "react-router-dom";
 
 
@@ -47,42 +37,40 @@ const Select = tw.select`border-2 px-5 py-3 rounded focus:outline-none font-medi
 const Textarea = styled(Input).attrs({ as: "textarea" })`
   ${tw`h-24`}
 `
-const SubmitButton = tw(PrimaryButtonBase)`inline-block mt-8`
 
 
 
 //Module
 export default ({
-    subheading = "",
-    heading = <> Book Medical <span tw="text-primary-500">Instantly</span><wbr /></>,
-    description = <> All driver medicals are completed in accordance with DVLA Group 2 guidelines. <wbr /> Fill in your details below to get an appointment </>,
-    submitButtonText = "Book",
+    heading = <> Create Medical <span tw="text-primary-500">Appointment</span><wbr /></>,
     textOnLeft = true,
 }) => {
 
-
-    //Executes side effect 
-    const [appointmentTypes, setAppointmentTypes] = React.useState([])
-    const [clinics, setClinic] = React.useState([])
-
-
-    const [appointmentDates, setAppointmentDates] = React.useState([])
-    const [appointmentIds, setAppointmentIds] = React.useState([])
-    const [appointmentDateTimeOnly, setAppointmentDateTimeOnly] = React.useState([])
-
-    const [paymentClientSecret, setpaymentClientSecret] = React.useState("")
+    //Data
+    const [clinics, setClinics] = React.useState([]);
+    const [doctors, setDoctors] = React.useState([]);
     const [formData, setFormData] = React.useState(
         {
-            firstName: "",
-            lastName: "",
-            emailAddress: "",
-            dob: "",
-            phoneNumber: "",
-            gender: "",
-            appointmentTypeId: "",
-            appointmentId: "",
-            postCode: ""
-        })
+            userId: "",
+            clinicId: "",
+            appointmentDateTime: ""
+        });
+
+    const [isScheduling, setIsScheduling] = React.useState(false);
+    const [isScheduled, setIsScheduled] = React.useState(false);
+    const [responseMessage, setResponseMessage] = React.useState([]);
+
+    function getClinics() {
+        fetch("https://localhost:5001/api/Appointment/get-clinics").
+            then(res => res.json()).
+            then(data => setClinics(data.clinicsResponse));
+    }
+
+    function getDoctors() {
+        fetch("https://localhost:5001/api/Authentication/get-users").
+            then(res => res.json()).
+            then(data => setDoctors(data.users));
+    }
 
     function handleChange(event) {
         setFormData(
@@ -94,64 +82,51 @@ export default ({
             }
         )
     }
-
-    function setSelectedTimeSlot(dateTime) {
-        const selectedSlotIndex = appointmentDateTimeOnly.indexOf(dateTime.getTime());
-        const appointmentId = appointmentIds[selectedSlotIndex];
-        formData.appointmentId = appointmentId;
-        console.log(`appointmentId ${appointmentId}`);
-        console.log(formData)
-    }
-
     const history = useHistory()
-    React.useEffect(getAppointmentTypes, [])
+
+    //Executes side effect 
+    React.useEffect(getDoctors, [])
     React.useEffect(getClinics, [])
 
-    function getAppointmentTypes() {
-        fetch("https://localhost:5001/api/Appointment/get-available-appointment-types").
-            then(res => res.json()).
-            then(data => setAppointmentTypes(data.appointmentTypes));
-    }
-
-    function getClinics() {
-        fetch("https://localhost:5001/api/Appointment/get-clinics").
-            then(res => res.json()).
-            then(data => setClinic(data.clinicsResponse));
-    }
-
-    function getCreatedAppointmentDatesForClinic(event) {
-        const clinicId = event.target.value;
-        fetch(`https://localhost:5001/api/Appointment/get-created-appointment-dates?clinicId=${clinicId}`).
-            then(res => res.json()).
-            then(data => setAndParseAppointmentDates(data.createdAppointmentResponseModel));
-    }
-
-
-    function setAndParseAppointmentDates(appointmentDates) {
-        setAppointmentDates(appointmentDates)
-        setAppointmentDateTimeOnly(appointmentDates.map(x => new Date(x.appointmentDateTime).getTime()));
-        setAppointmentIds(appointmentDates.map(x => x.appointmentId));
-    }
-
-    async function createAppointmentBookingIntent(event) {
+    async function createAppointment(event) {
+        setIsScheduling(true)
         event.preventDefault();
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         };
-        const response = await fetch("https://localhost:5001/api/Appointment/create-appointment-booking-intent", requestOptions)
-        const responseData = await response.json();
-        history.push({
-            pathname: '/checkout',
-            state: { clientSecret: responseData.message }
-        })
+        const response = await fetch("https://localhost:5001/api/Appointment/create-appointment", requestOptions)
+        setResponseMessage(response.message)
+        setIsScheduling(false)
+        setIsScheduled(true)
+
+
     }
 
     function timeSlotValidator(slotTime) {
-
-        const isValid = appointmentDateTimeOnly.includes(slotTime.getTime());
+        const morningTime = new Date(
+            slotTime.getFullYear(),
+            slotTime.getMonth(),
+            slotTime.getDate(),
+            8,
+            0,
+            0
+        );
+        const eveningTime = new Date(
+            slotTime.getFullYear(),
+            slotTime.getMonth(),
+            slotTime.getDate(),
+            18,
+            0,
+            0
+        );
+        const isValid = slotTime.getTime() < eveningTime.getTime() && slotTime.getTime() > morningTime.getTime();
         return isValid;
+    }
+
+    function setSelectedTimeSlot(dateTime) {
+        formData.appointmentDateTime = dateTime;
     }
 
     return (
@@ -163,38 +138,23 @@ export default ({
                 <TextColumn textOnLeft={textOnLeft}>
 
                     <TextContent>
-                        {subheading && <Subheading>{subheading}</Subheading>}
                         <Heading>{heading}</Heading>
-                        {description && <Description>{description}</Description>}
-                        <Form onSubmit={createAppointmentBookingIntent}>
+                        <Subheading>{responseMessage}</Subheading>
+                        <Form onSubmit={createAppointment}>
 
-                            <Select required name="appointmentTypeId" onChange={handleChange}>
-                                <option value="⬇️ Select an Appointment Type ⬇️"> -- Select an Appointment Type -- </option>
-                                {appointmentTypes.map((appointmentType) => <option key={appointmentType.appointmentTypeId} value={appointmentType.appointmentTypeId}>{appointmentType.typeTitle}</option>)}
-                            </Select>
-
-                            <Select required name="clinicId" onChange={getCreatedAppointmentDatesForClinic}>
+                            <Select required name="clinicId" onChange={handleChange}>
                                 <option value="⬇️ Select a Clinic ⬇️"> -- Select a Clinic -- </option>
                                 {clinics.map((clinic) => <option key={clinic.clinicId} value={clinic.clinicId}>{clinic.clinic}</option>)}
                             </Select>
 
-                            <Input type="text" required placeholder="First Name" name="firstName" onChange={handleChange} />
-                            <Input type="text" required placeholder="Last Name" name="lastName" onChange={handleChange} />
-                            <Input type="text" required placeholder="Email" name="emailAddress" onChange={handleChange} />
-                            <Input type="date" required name="dob" onChange={handleChange} />
-                            <Input type="phone" required placeholder="Phone Number" name="phoneNumber" onChange={handleChange} />
-                            <Input type="text" required placeholder="Post Code" name="postCode" onChange={handleChange} />
-
-                            <Select required name="gender" onChange={handleChange}>
-                                <option value="⬇️ Gender ⬇️"> -- Gender -- </option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                            <Select required name="userId" onChange={handleChange}>
+                                <option value="⬇️ Select a Doctor ⬇️"> -- Select a Doctor -- </option>
+                                {doctors.map((doctor) => <option key={doctor.userId} value={doctor.userId}>{doctor.name}</option>)}
                             </Select>
 
-                            <DayTimePicker timeSlotValidator={timeSlotValidator} isLoading={false} isDone={false} loadingText="Selected an appointment"
-                                timeSlotSizeMinutes={60}
-                                confirmText="Select Slot" onConfirm={setSelectedTimeSlot} />
-
+                            <DayTimePicker timeSlotValidator={timeSlotValidator} isLoading={isScheduling} isDone={isScheduled} loadingText="Selected an appointment"
+                                timeSlotSizeMinutes={30}
+                                confirmText="Select Slot" onConfirm={setSelectedTimeSlot} doneText="Medical Appointment Created" />
 
                             <Input type="submit" value="Submit" />
 

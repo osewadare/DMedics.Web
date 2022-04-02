@@ -99,8 +99,6 @@ export default ({
     const selectedSlotIndex = appointmentDateTimeOnly.indexOf(dateTime.getTime());
     const appointmentId = appointmentIds[selectedSlotIndex];
     formData.appointmentId = appointmentId;
-    console.log(`appointmentId ${appointmentId}`);
-    console.log(formData)
   }
 
   const history = useHistory()
