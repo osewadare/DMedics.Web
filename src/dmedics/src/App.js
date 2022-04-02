@@ -11,6 +11,8 @@ import Login from "./pages/Login.js"
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Appointment from './pages/Appointment';
+import Dashboard from './pages/Dashboard';
+import CreateAppointment from './pages/CreateAppointment';
 
 
 function App() {
@@ -28,6 +30,12 @@ function App() {
         </Route>
         <Route path='/completed'>
           <BookingStatus />
+        </Route>
+        <Route path='/create-appointment'>
+          <CreateAppointment />
+        </Route>
+        <Route path='/dashboard'>
+          <Dashboard />
         </Route>
         <Route path='/login'>
           <Login />
