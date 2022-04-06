@@ -73,8 +73,8 @@ export default ({ roundedHeaderButton = false, logoLink, links, className, colla
 
   const defaultLinks = [
     <NavLinks key={1}>
-      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/#">Change Password</PrimaryLink>
-      <NavLink href="/#">Logout</NavLink>
+      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/change-password">Change Password</PrimaryLink>
+      <NavLink href="/logout">Logout</NavLink>
     </NavLinks>
   ];
 

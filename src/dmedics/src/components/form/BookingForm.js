@@ -6,11 +6,6 @@ import { SectionHeading, Subheading as SubheadingBase } from "../misc/Headings.j
 import { PrimaryButton as PrimaryButtonBase } from "../misc/Buttons.js";
 import BookAppointmentSrc from "../../assets/images/bookappointment.jpg";
 
-
-//import CustomSelect from "react-select-with-icon";
-
-
-
 //Timeslot component
 import moment from 'moment';
 import DayTimePicker from '@mooncake-dev/react-day-time-picker';
@@ -176,6 +171,10 @@ export default ({
                 {clinics.map((clinic) => <option key={clinic.clinicId} value={clinic.clinicId}>{clinic.clinic}</option>)}
               </Select>
 
+              <DayTimePicker timeSlotValidator={timeSlotValidator} isLoading={false} isDone={false} loadingText="Selected an appointment"
+                timeSlotSizeMinutes={30}
+                confirmText="Select Slot" onConfirm={setSelectedTimeSlot} />
+
               <Input type="text" required placeholder="First Name" name="firstName" onChange={handleChange} />
               <Input type="text" required placeholder="Last Name" name="lastName" onChange={handleChange} />
               <Input type="text" required placeholder="Email" name="emailAddress" onChange={handleChange} />
@@ -189,9 +188,7 @@ export default ({
                 <option value="Female">Female</option>
               </Select>
 
-              <DayTimePicker timeSlotValidator={timeSlotValidator} isLoading={false} isDone={false} loadingText="Selected an appointment"
-                timeSlotSizeMinutes={60}
-                confirmText="Select Slot" onConfirm={setSelectedTimeSlot} />
+
 
 
               <Input type="submit" value="Submit" />

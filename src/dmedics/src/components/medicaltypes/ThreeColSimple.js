@@ -59,20 +59,20 @@ export default ({
     {
       imageSrc: HGVImage,
       title: "HGV Driver Medicals",
-      description: "We strictly only deal with vendors that provide top notch security.",
-      url: "https://timerse.com"
+      description: "",
+      url: ""
     },
     {
       imageSrc: TaxiImage,
       title: "Taxi Driver Medicals",
-      description: "Lorem ipsum donor amet siti ceali placeholder text",
-      url: "https://google.com"
+      description: "",
+      url: ""
     },
     {
       imageSrc: AmbulanceImage,
       title: "Ambulance Driver Medicals",
-      description: "Lorem ipsum donor amet siti ceali placeholder text",
-      url: "https://reddit.com"
+      description: "",
+      url: ""
     }
   ],
   linkText = "Learn More",

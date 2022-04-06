@@ -38,21 +38,21 @@ const IllustrationImage = styled.div`
   ${tw`m-12 xl:m-16 w-full max-w-lg bg-contain bg-center bg-no-repeat`}
 `;
 
-const headingText = "Sign In"
+const headingText = "Change Password"
 const logoLinkUrl = "#"
 const illustrationImageSrc = illustration
 
-export default function ({ setToken }) {
+export default function () {
 
-  const [loginData, setLoginData] = React.useState({
-    email: "",
+  const [password, setPassword] = React.useState({
     passsword: ""
   })
 
   const [errorMessage, setErrorMessage] = React.useState("")
+
   const history = useHistory();
   function handleChange(event) {
-    setLoginData(
+    setPassword(
       prevFormData => {
         return {
           ...prevFormData,
@@ -62,29 +62,24 @@ export default function ({ setToken }) {
     )
   }
 
-  async function login(event) {
+  async function changePassword(event) {
     event.preventDefault();
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(loginData)
+      body: JSON.stringify(password)
     };
-    const response = await fetch("https://localhost:5001/api/Authentication/login", requestOptions)
+    const response = await fetch("https://localhost:5001/api/Authentication/change-password", requestOptions)
     const responseData = await response.json();
 
     if (responseData.isSuccessful) {
-      console.log(responseData);
-      setToken(responseData.data.token);
       history.push({
         pathname: '/dashboard',
-        state: { clientSecret: responseData.message }
       })
     }
     else {
       setErrorMessage(responseData.message);
     }
-
-
   }
 
   return (
@@ -95,13 +90,14 @@ export default function ({ setToken }) {
             <LogoLink href={logoLinkUrl}>
               <LogoImage src={logo} />
             </LogoLink>
-            <Heading>{headingText}</Heading>
-            <a>{errorMessage}</a>
-            <Form onSubmit={login}>
-              <Input type="text" required placeholder="Email Address" name="email" onChange={handleChange} />
-              <Input type="password" required placeholder="Password" name="password" onChange={handleChange} />
-              <Input type="submit" value="Sign In" />
-            </Form>
+            <MainContent>
+              <Heading>{headingText}</Heading>
+              <a>{errorMessage}</a>
+              <Form onSubmit={changePassword}>
+                <Input type="password" required placeholder="New Password" name="password" onChange={handleChange} />
+                <Input type="submit" value="Change Password" />
+              </Form>
+            </MainContent>
           </MainContainer>
           <IllustrationContainer>
             <IllustrationImage imageSrc={illustrationImageSrc} />

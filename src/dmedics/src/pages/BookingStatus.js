@@ -19,7 +19,7 @@ export default function BookingStatus() {
   const StatusData = {
     subheading: `Booking Ref: ${bookingRef}`,
     heading: { redirect_status },
-    description: <>Feel free to <span tw="text-primary-500">get in touch</span><wbr /> with us.</>,
+    description: <>Thank you for booking your medical. Feel free to <span tw="text-primary-500">get in touch</span><wbr /> with us if you have any inquiries.</>,
     textOnLeft: true,
   };
 
