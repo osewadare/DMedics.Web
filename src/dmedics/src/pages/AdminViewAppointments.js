@@ -11,7 +11,7 @@ export default function AdminViewAppointments() {
     const [appointments, setAppointments] = React.useState([])
 
     function getAppointments() {
-        fetch(`https://localhost:5001/api/Appointment/get-appointments`).
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Appointment/get-appointments`).
             then(res => res.json()).
             then(data => setAppointments(data.appointments));
     }

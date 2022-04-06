@@ -69,7 +69,7 @@ export default function () {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(password)
     };
-    const response = await fetch("https://localhost:5001/api/Authentication/change-password", requestOptions)
+    const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Authentication/change-password`, requestOptions)
     const responseData = await response.json();
 
     if (responseData.isSuccessful) {

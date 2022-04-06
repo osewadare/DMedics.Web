@@ -11,7 +11,7 @@ export default function BookingStatus() {
   const [bookingRef, setBookingReferenceNumber] = useState("");
 
   function updatePaymentStatus() {
-    fetch(`https://localhost:5001/api/Appointment/update-appointment-payment-status?paymentSecret=${payment_intent}&status=${redirect_status}`).
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Appointment/update-appointment-payment-status?paymentSecret=${payment_intent}&status=${redirect_status}`).
       then(res => res.json()).
       then(data => setBookingReferenceNumber(data.message));
   }

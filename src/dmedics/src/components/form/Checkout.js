@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-export default function () 
-{
+export default function () {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -54,7 +53,7 @@ export default function ()
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000/completed",
+        return_url: `${process.env.REACT_APP_WEB_BASE_URL}/completed`,
       },
     });
 

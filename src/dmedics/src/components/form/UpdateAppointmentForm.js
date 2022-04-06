@@ -52,13 +52,13 @@ export default ({
     const [responseMessage, setResponseMessage] = React.useState("");
 
     function getClinics() {
-        fetch("https://localhost:5001/api/Appointment/get-clinics").
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Appointment/get-clinics`).
             then(res => res.json()).
             then(data => setClinics(data.clinicsResponse));
     }
 
     function getDoctors() {
-        fetch("https://localhost:5001/api/Authentication/get-users").
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Authentication/get-users`).
             then(res => res.json()).
             then(data => setDoctors(data.users));
     }
@@ -86,7 +86,7 @@ export default ({
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         };
-        const response = await fetch("https://localhost:5001/api/Appointment/update-appointment", requestOptions)
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Appointment/update-appointment`, requestOptions)
         const responseData = await response.json();
         setResponseMessage(responseData.message)
     }

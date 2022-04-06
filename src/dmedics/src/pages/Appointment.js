@@ -21,8 +21,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 const stripePromise = loadStripe("pk_test_51KfsT9HhUWcUfuFhqOTfnSwhJ681e7y3U4XJrDKeBYFmVTB5I5SgxnpPFmjfzFGOx7C8m50SDUTpXqvgdQbB43a100jmRPXpfk");
 const appearance = {
-    theme: 'stripe',
-  };
+  theme: 'stripe',
+};
 
 //Twin macro styling 
 
@@ -44,7 +44,7 @@ const IllustrationImage = styled.div`
   ${tw`m-12 xl:m-16 w-full max-w-lg bg-contain bg-center bg-no-repeat`}
 `;
 
-const headingText= "View Appointment Details"
+const headingText = "View Appointment Details"
 const logoLinkUrl = "#"
 const illustrationImageSrc = illustration
 
@@ -55,46 +55,46 @@ export default function () {
 
   const [appointmentReference, setAppointmentReference] = React.useState('');
 
-  function getAppointment(event){
+  function getAppointment(event) {
 
     event.preventDefault();
-      fetch(`https://localhost:5001/api/Appointment/get-appointment?appointmentReference=${appointmentReference}`).
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Appointment/get-appointment?appointmentReference=${appointmentReference}`).
       then(res => res.json()).
-      then(data => setAppointment(data)); 
+      then(data => setAppointment(data));
   }
 
-function handleChange(event){
-  setAppointmentReference(event.target.value)
-}
+  function handleChange(event) {
+    setAppointmentReference(event.target.value)
+  }
 
 
   return (
-  <AnimationRevealPage>
-    <Container>
-      <Content> 
-        <MainContainer>
-          <LogoLink href={logoLinkUrl}>
-            <LogoImage src={logo} />
-          </LogoLink>
-          <MainContent>
-            <Heading>{headingText}</Heading>  
-            <Form onSubmit={getAppointment}>
-            <Input type="text" required placeholder="Appointment Reference" name="appointmentReference" onChange={handleChange}/>
-            <Input type="submit" value="View"/>
-            </Form>
-          </MainContent>
-        </MainContainer>
-        <MainContainer>
-          <MainContent>
-            <h2>Appointment Reference: {appointment.appointmentReference}</h2>
-            <h2>First Name: {appointment.firstName}</h2>
-            <h2>Appointment Time: {appointment.appointmentDateTime}</h2>
-            <h2>Clinic: {appointment.clinic}</h2>
-          </MainContent>
-        </MainContainer>
-      </Content>
-    </Container>
-  </AnimationRevealPage>
+    <AnimationRevealPage>
+      <Container>
+        <Content>
+          <MainContainer>
+            <LogoLink href={logoLinkUrl}>
+              <LogoImage src={logo} />
+            </LogoLink>
+            <MainContent>
+              <Heading>{headingText}</Heading>
+              <Form onSubmit={getAppointment}>
+                <Input type="text" required placeholder="Appointment Reference" name="appointmentReference" onChange={handleChange} />
+                <Input type="submit" value="View" />
+              </Form>
+            </MainContent>
+          </MainContainer>
+          <MainContainer>
+            <MainContent>
+              <h2>Appointment Reference: {appointment.appointmentReference}</h2>
+              <h2>First Name: {appointment.firstName}</h2>
+              <h2>Appointment Time: {appointment.appointmentDateTime}</h2>
+              <h2>Clinic: {appointment.clinic}</h2>
+            </MainContent>
+          </MainContainer>
+        </Content>
+      </Container>
+    </AnimationRevealPage>
   )
 }
 

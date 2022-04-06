@@ -69,7 +69,7 @@ export default function ({ setToken }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(loginData)
     };
-    const response = await fetch("https://localhost:5001/api/Authentication/login", requestOptions)
+    const response = await fetch(`{process.env.REACT_APP_API_BASE_URL}/api/Authentication/login", requestOptions)
     const responseData = await response.json();
 
     if (responseData.isSuccessful) {

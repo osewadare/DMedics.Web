@@ -101,20 +101,20 @@ export default ({
   React.useEffect(getClinics, [])
 
   function getAppointmentTypes() {
-    fetch("https://localhost:5001/api/Appointment/get-available-appointment-types").
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Appointment/get-available-appointment-types`).
       then(res => res.json()).
       then(data => setAppointmentTypes(data.appointmentTypes));
   }
 
   function getClinics() {
-    fetch("https://localhost:5001/api/Appointment/get-clinics").
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Appointment/get-clinics`).
       then(res => res.json()).
       then(data => setClinic(data.clinicsResponse));
   }
 
   function getCreatedAppointmentDatesForClinic(event) {
     const clinicId = event.target.value;
-    fetch(`https://localhost:5001/api/Appointment/get-created-appointment-dates?clinicId=${clinicId}`).
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Appointment/get-created-appointment-dates?clinicId=${clinicId}`).
       then(res => res.json()).
       then(data => setAndParseAppointmentDates(data.createdAppointmentResponseModel));
   }
