@@ -133,7 +133,7 @@ export default ({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     };
-    const response = await fetch("https://localhost:5001/api/Appointment/create-appointment-booking-intent", requestOptions)
+    const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Appointment/create-appointment-booking-intent`, requestOptions)
     const responseData = await response.json();
     history.push({
       pathname: '/checkout',
