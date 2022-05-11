@@ -61,7 +61,7 @@ export default ({
     const [responseMessage, setResponseMessage] = React.useState([]);
 
     function getClinics() {
-        fetch(`${process.env.REACT_APP_API_BASE_URL}api/Appointment/get-clinics`).
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/api/Appointment/get-clinics`).
             then(res => res.json()).
             then(data => setClinics(data.clinicsResponse));
     }
