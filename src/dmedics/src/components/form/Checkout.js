@@ -53,7 +53,7 @@ export default function () {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: `${process.env.REACT_APP_WEB_BASE_URL}/completed`,
+        return_url: `${process.env.REACT_APP_WEB_BASE_URL}completed`,
       },
     });
 
